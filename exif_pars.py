@@ -60,6 +60,7 @@ def utc_to_local(utc_datetime):
 
 if len(sys.argv) == 2:
     img_path = sys.argv[1]
+    
     if os.path.exists(img_path):
         
         for roots, dirs, files in os.walk(img_path):
@@ -87,8 +88,6 @@ if len(sys.argv) == 2:
                             if i.track_type == 'Video':
 
                                 if 'encoded_date' in img_meta:
-                                    
-
                                     encoded_date = utc_to_local(
                                         img_meta['encoded_date'])
 
@@ -99,16 +98,6 @@ if len(sys.argv) == 2:
                                         img_meta['file_last_modification_date'])
                                 else:
                                     encoded_date = get_time_file(full_name)
-
-                                check_date = encoded_date.split(' ')
-                                check_hour = check_date[1].split('.')
-
-                                if len(check_hour[0]) == 1:
-                                    check_hour[0] = '0' + check_hour[0]
-                                    check_time = check_hour[0] + '.' + \
-                                        check_hour[1] + '.' + check_hour[2]
-                                    check_date[1] = check_time
-                                    encoded_date = check_date[0] + ' ' + check_date[1]
 
                                 file_time = encoded_date
 
@@ -124,14 +113,8 @@ if len(sys.argv) == 2:
                                     if my_image.has_exif:
                                         # у файла есть EXIF
                                         try:
-                                            get_datetime = my_image.get(
-                                                "datetime").split(' ')
-                                            year = get_datetime[0].split(':')[0]
-                                            month = get_datetime[0].split(':')[1]
-                                            day = get_datetime[0].split(':')[2]
-                                            norm_date = day + '-' + month + '-' + year
-                                            file_time = norm_date + ' ' + \
-                                                get_datetime[1].replace(':', '.')
+                                            get_datetime = my_image.get("datetime")
+                                            file_time = datetime.strptime(UTC_datetime, '%Y:%m:%d %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
                                         except:
                                             file_time = get_time_file(full_name)
                                         finally:
