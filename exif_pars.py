@@ -3,7 +3,7 @@ import time
 import fnmatch
 from exif import Image
 from pymediainfo import MediaInfo
-from datetime import datetime
+from datetime import datetime, timezone
 import mimetypes
 import sys
 
@@ -48,23 +48,9 @@ def get_time_file(name):
 
 def utc_to_local(utc_datetime):
     """
-        Функция переводит время UTC в местное (доработать!!!)
+        Функция переводит время UTC в местное
     """
-    utc_datetime = utc_datetime.replace('UTC ', '')
-    utc_date = utc_datetime.split(' ')[0].split('-')
-    utc_time = utc_datetime.split(' ')[1].split(':')
-    local_date = utc_date[2] + '-' + utc_date[1] + '-' + utc_date[0]
-
-    local_hour_int = int(utc_time[0]) + 8
-    if local_hour_int >= 24:
-        local_hour_int = local_hour_int - 24
-        if local_hour_int < 10:
-            local_hour = '0' + str(local_hour_int)
-    else:
-        local_hour = str(local_hour_int)
-
-    local_time = local_hour + '.' + utc_time[1] + '.' + utc_time[2]
-    local_datetime = local_date + ' ' + local_time
+    local_datetime = datetime.strptime(utc_datetime, '%Y-%m-%d %H:%M:%S %Z').replace(tzinfo=timezone.utc).astimezone(tz=None).strftime('%d-%m-%Y %H:%M:%S')
     return local_datetime
 
 
